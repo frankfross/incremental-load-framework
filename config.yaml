@@ -1,0 +1,15 @@
+# SQLite is the default (state/incremental.db). Set the DATABASE_URL
+# environment variable to point at Postgres instead (needs `pip install psycopg`).
+database:
+  sqlite_path: "state/incremental.db"
+
+pipelines:
+  orders:
+    source:
+      type: csv
+      path: "data/orders.csv"      # copy sample_data/orders_day1.csv here to start
+      watermark_column: "updated_at"
+    destination_table: "orders"
+    natural_key: "order_id"
+    initial_watermark: "1970-01-01T00:00:00"
+    lookback: "24h"                # re-fetch the last 24h to catch late-arriving rows
